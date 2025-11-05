@@ -59,6 +59,7 @@ func routes(_ app: Application) throws {
                         let ackString = String(data: ackData, encoding: .utf8)
                     {
                         ws.send(ackString)
+                        print("sent: \(ackString)")
                     }
 
                     state.periodicTask?.cancel()
@@ -82,6 +83,7 @@ func routes(_ app: Application) throws {
                             )
                         {
                             ws.send(dataString)
+                            print("sent: \(dataString)")
                         } else {
                             return task.cancel()
                         }
@@ -97,6 +99,7 @@ func routes(_ app: Application) throws {
                         let ackString = String(data: ackData, encoding: .utf8)
                     {
                         ws.send(ackString)
+                        print("sent: \(ackString)")
                     }
                 }
             } catch {
