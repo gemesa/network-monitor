@@ -17,7 +17,7 @@ struct ServerMessage: Encodable {
     /*
      Examples:
      {"type":"ack","message":"subscribed"}
-     {"type":"data","message":"123"}
+     {"type":"data","data":["192.168.2.1","192.168.2.120"]}
      {"type":"ack","message":"unsubscribed"}
      */
 }
