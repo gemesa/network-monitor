@@ -7,6 +7,10 @@ A network monitoring system that scans the LAN and streams device information to
 - Server (macOS): scans the LAN using `nmap -sn` (ping scan) and broadcasts discovered devices to clients via WebSockets (Swift)
 - TODO: clients
 
+## Future improvements
+
+Consider utilizing [SimplePing](https://developer.apple.com/library/archive/samplecode/SimplePing/Introduction/Intro.html), eliminating the need for root privileges.
+
 ## Requirements
 
 - macOS 15.6+
