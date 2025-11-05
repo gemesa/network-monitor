@@ -19,11 +19,11 @@ Server:
 ```
 $ sudo ./build/Build/Products/Debug/server
 [ NOTICE ] Server started on http://127.0.0.1:8080
-[ INFO ] GET /data [request-id: F2180912-62D8-4BEF-AB5E-02B8F83B0741]
+[ INFO ] GET /data [request-id: 51F231EC-DF42-406A-8937-5F3962F3C42B]
 received: {"type":"subscribe"}
 
-sent: {"type":"ack","message":"subscribed"}
-sent: {"type":"data","data":["192.168.2.1","192.168.2.120","192.168.2.141","192.168.2.173","192.168.2.202","192.168.2.234","192.168.2.243"]}
+sent: {"message":"subscribed","type":"ack"}
+sent: {"type":"data","data":[{"ip":"192.168.2.1","mac":"XX:XX:XX:XX:XX:XX","hostname":"horus.lan"},{"ip":"192.168.2.120","mac":"XX:XX:XX:XX:XX:XX"},{"ip":"192.168.2.141","mac":"XX:XX:XX:XX:XX:XX","hostname":"Mac.lan"},{"ip":"192.168.2.173","mac":"XX:XX:XX:XX:XX:XX","hostname":"Galaxy-S10e.lan"},{"ip":"192.168.2.202","mac":"XX:XX:XX:XX:XX:XX","hostname":"HTNB-3006.lan"},{"ip":"192.168.2.234","mac":"XX:XX:XX:XX:XX:XX","hostname":"iPhone.lan"},{"ip":"192.168.2.243","hostname":"Macmini.lan"}]}
 received: {"type":"unsubscribe"}
 
 sent: {"message":"unsubscribed","type":"ack"}
@@ -32,10 +32,10 @@ sent: {"message":"unsubscribed","type":"ack"}
 Client:
 
 ```
-$ websocat ws://127.0.0.1:8080/data                       
+$ websocat ws://127.0.0.1:8080/data                      
 {"type":"subscribe"}
-{"type":"ack","message":"subscribed"}
-{"type":"data","data":["192.168.2.1","192.168.2.120","192.168.2.141","192.168.2.173","192.168.2.202","192.168.2.234","192.168.2.243"]}
+{"message":"subscribed","type":"ack"}
+{"type":"data","data":[{"ip":"192.168.2.1","mac":"XX:XX:XX:XX:XX:XX","hostname":"horus.lan"},{"ip":"192.168.2.120","mac":"XX:XX:XX:XX:XX:XX"},{"ip":"192.168.2.141","mac":"XX:XX:XX:XX:XX:XX","hostname":"Mac.lan"},{"ip":"192.168.2.173","mac":"XX:XX:XX:XX:XX:XX","hostname":"Galaxy-S10e.lan"},{"ip":"192.168.2.202","mac":"XX:XX:XX:XX:XX:XX","hostname":"HTNB-3006.lan"},{"ip":"192.168.2.234","mac":"XX:XX:XX:XX:XX:XX","hostname":"iPhone.lan"},{"ip":"192.168.2.243","hostname":"Macmini.lan"}]}
 {"type":"unsubscribe"}
 {"message":"unsubscribed","type":"ack"}
 ```

@@ -13,11 +13,11 @@ struct ClientCommand: Decodable {
 struct ServerMessage: Encodable {
     let type: String
     let message: String?
-    let data: [String]?
+    let data: [NmapHost]?
     /*
      Examples:
      {"type":"ack","message":"subscribed"}
-     {"type":"data","data":["192.168.2.1","192.168.2.120"]}
+     {"type":"data","data":[{"ip":"192.168.2.1","mac":"XX:XX:XX:XX:XX:XX","hostname":"horus.lan"}]}
      {"type":"ack","message":"unsubscribed"}
      */
 }
@@ -70,11 +70,10 @@ func routes(_ app: Application) throws {
                         delay: interval
                     ) { task in
                         let hosts = scanNetwork(subnet: "192.168.2.0/24")
-                        let hostData = hosts.map { $0.ip }
                         let data = ServerMessage(
                             type: "data",
                             message: nil,
-                            data: hostData
+                            data: hosts
                         )
                         if let dataData = try? JSONEncoder().encode(data),
                             let dataString = String(
