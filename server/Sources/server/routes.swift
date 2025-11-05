@@ -114,6 +114,7 @@ func routes(_ app: Application) throws {
                     )
                 {
                     ws.send(errorString)
+                    print("sent: \(errorString)")
                 }
             }
         }
