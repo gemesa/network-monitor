@@ -54,6 +54,7 @@ func routes(_ app: Application) throws {
                 if clientCommand.type == "subscribe" {
                     guard state.subscriptionId == nil else { return }
 
+                    // This task is not executed on the event loop.
                     Task {
                         let id = await scanner.subscribe { hostData in
                             let data = ServerMessage(
@@ -71,6 +72,7 @@ func routes(_ app: Application) throws {
                                 return
                             }
 
+                            // WebSocket operations must run on the event loop thread.
                             ws.eventLoop.execute {
                                 ws.send(dataString)
                                 print("sent: \(dataString)")
@@ -78,6 +80,8 @@ func routes(_ app: Application) throws {
                         }
                         ws.eventLoop.execute {
                             print("subscribed with id: \(id)")
+                            // We promised Swift that all access to `state` happens on one thread,
+                            // so we need to execute this on the event loop.
                             state.subscriptionId = id
 
                             let ack = ServerMessage(
@@ -88,6 +92,7 @@ func routes(_ app: Application) throws {
                             if let ackData = try? JSONEncoder().encode(ack),
                                 let ackString = String(data: ackData, encoding: .utf8)
                             {
+                                // WebSocket operations must run on the event loop thread.
                                 ws.send(ackString)
                                 print("sent: \(ackString)")
                             }
