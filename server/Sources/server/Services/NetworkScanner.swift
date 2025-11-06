@@ -59,17 +59,33 @@ actor NetworkScanner {
 }
 
 func scanNetwork(subnet: String) async -> [NmapHost] {
-    let task = Task.detached {
+    let task = Task.detached { () -> [NmapHost] in
         let process = Process()
         process.executableURL = URL(fileURLWithPath: "/opt/homebrew/bin/nmap")
         process.arguments = ["-sn", subnet, "-oX", "-"]
-        let pipe = Pipe()
-        process.standardOutput = pipe
-        try? process.run()
-        let data = pipe.fileHandleForReading.readDataToEndOfFile()
-        process.waitUntilExit()
+        let stdoutPipe = Pipe()
+        let stderrPipe = Pipe()
+        process.standardOutput = stdoutPipe
+        process.standardError = stderrPipe
 
-        return NmapXMLParser().parse(data: data)
+        do {
+            try process.run()
+            let stdoutData = stdoutPipe.fileHandleForReading.readDataToEndOfFile()
+            let stderrData = stderrPipe.fileHandleForReading.readDataToEndOfFile()
+            process.waitUntilExit()
+
+            guard process.terminationStatus == 0 else {
+                let errorMessage = String(data: stderrData, encoding: .utf8) ?? "Unknown error"
+                print("nmap failed with status: \(process.terminationStatus)")
+                print("nmap stderr: \(errorMessage)")
+                return []
+            }
+
+            return NmapXMLParser().parse(data: stdoutData)
+        } catch {
+            print("Failed to run nmap: \(error)")
+            return []
+        }
     }
     let hosts = await task.value
     return hosts
