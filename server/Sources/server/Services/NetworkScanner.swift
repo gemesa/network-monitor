@@ -5,6 +5,11 @@ actor NetworkScanner {
     private var scanTask: Task<Void, Never>?
     private var subscribers: [UUID: ([NmapHost]) -> Void] = [:]
 
+    private var subnet: String {
+        // https://forums.swift.org/t/how-to-add-custom-arguments-to-vapors-serve-command/74406/2
+        ProcessInfo.processInfo.environment["SUBNET"] ?? "192.168.2.0/24"
+    }
+
     func getLatestHosts() -> [NmapHost] {
         latestHosts
     }
@@ -37,7 +42,7 @@ actor NetworkScanner {
 
         scanTask = Task {
             while !Task.isCancelled {
-                latestHosts = await scanNetwork(subnet: "192.168.2.0/24")
+                latestHosts = await scanNetwork(subnet: subnet)
 
                 notifySubscribers()
 
