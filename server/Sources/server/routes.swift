@@ -24,6 +24,8 @@ struct ServerMessage: Encodable {
 
 func routes(_ app: Application) throws {
     app.webSocket("data") { _, ws in
+        let scanner = NetworkScanner()
+
         /*
          It is safe to mark this with `@unchecked Sendable` because all WebSocket
          callbacks (for a single connection) run on the same event loop thread.
@@ -34,7 +36,7 @@ func routes(_ app: Application) throws {
          Capture of 'state' with non-Sendable type 'WebSocketState' in a '@Sendable' closure
          */
         class WebSocketState: @unchecked Sendable {
-            var periodicTask: RepeatedTask?
+            var subscriptionId: UUID?
         }
 
         let state = WebSocketState()
@@ -50,45 +52,54 @@ func routes(_ app: Application) throws {
                 )
 
                 if clientCommand.type == "subscribe" {
-                    let ack = ServerMessage(
-                        type: "ack",
-                        message: "subscribed",
-                        data: nil
-                    )
-                    if let ackData = try? JSONEncoder().encode(ack),
-                        let ackString = String(data: ackData, encoding: .utf8)
-                    {
-                        ws.send(ackString)
-                        print("sent: \(ackString)")
-                    }
+                    guard state.subscriptionId == nil else { return }
 
-                    state.periodicTask?.cancel()
-
-                    let interval = TimeAmount.seconds(10)
-                    state.periodicTask = ws.eventLoop.scheduleRepeatedTask(
-                        initialDelay: interval,
-                        delay: interval
-                    ) { task in
-                        let hosts = scanNetwork(subnet: "192.168.2.0/24")
-                        let data = ServerMessage(
-                            type: "data",
-                            message: nil,
-                            data: hosts
-                        )
-                        if let dataData = try? JSONEncoder().encode(data),
-                            let dataString = String(
-                                data: dataData,
-                                encoding: .utf8
+                    Task {
+                        let id = await scanner.subscribe { hostData in
+                            let data = ServerMessage(
+                                type: "data",
+                                message: nil,
+                                data: hostData
                             )
-                        {
-                            ws.send(dataString)
-                            print("sent: \(dataString)")
-                        } else {
-                            return task.cancel()
+
+                            guard let dataData = try? JSONEncoder().encode(data),
+                                let dataString = String(
+                                    data: dataData,
+                                    encoding: .utf8
+                                )
+                            else {
+                                return
+                            }
+
+                            ws.eventLoop.execute {
+                                ws.send(dataString)
+                                print("sent: \(dataString)")
+                            }
+                        }
+                        ws.eventLoop.execute {
+                            print("subscribed with id: \(id)")
+                            state.subscriptionId = id
+
+                            let ack = ServerMessage(
+                                type: "ack",
+                                message: "subscribed",
+                                data: nil
+                            )
+                            if let ackData = try? JSONEncoder().encode(ack),
+                                let ackString = String(data: ackData, encoding: .utf8)
+                            {
+                                ws.send(ackString)
+                                print("sent: \(ackString)")
+                            }
                         }
                     }
                 } else if clientCommand.type == "unsubscribe" {
-                    state.periodicTask?.cancel()
+                    if let id = state.subscriptionId {
+                        Task {
+                            await scanner.unsubscribe(id: id)
+                        }
+                        state.subscriptionId = nil
+                    }
                     let ack = ServerMessage(
                         type: "ack",
                         message: "unsubscribed",
@@ -116,6 +127,15 @@ func routes(_ app: Application) throws {
                     ws.send(errorString)
                     print("sent: \(errorString)")
                 }
+            }
+        }
+        ws.onClose.whenComplete { _ in
+            if let id = state.subscriptionId {
+                Task {
+                    await scanner.unsubscribe(id: id)
+                }
+                print("connection closed: \(id)")
+                state.subscriptionId = nil
             }
         }
     }
