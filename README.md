@@ -56,10 +56,22 @@ $ websocat ws://127.0.0.1:8080/data
 #### Build
 
 ```
+$ swift build --build-path build
+```
+
+Alternatively:
+
+```
 $ xcodebuild build -scheme server -derivedDataPath build -destination 'platform=macOS,arch=arm64' -quiet
 ```
 
 #### Run
+
+```
+$ sudo ./build/arm64-apple-macosx/debug/server
+```
+
+Alternatively:
 
 ```
 $ sudo ./build/Build/Products/Debug/server
