@@ -90,3 +90,38 @@ $ swift-format -i -r Sources/
 $ brew install swiftlint
 $ swiftlint --strict Sources/
 ```
+
+### iOS client
+
+#### Build
+
+```
+$ xcodebuild -scheme ios-client build -derivedDataPath build -destination 'platform=iOS Simulator,arch=arm64,name=iPhone 17' -quiet
+```
+
+#### Run
+
+```
+$ xcrun simctl boot "iPhone 17"
+$ open -a Simulator
+$ xcrun simctl install "iPhone 17" build/Build/Products/Debug-iphonesimulator/ios-client.app
+$ xcrun simctl launch "iPhone 17" gemesa.ios-client
+```
+
+#### Terminate
+
+```
+$ xcrun simctl terminate "iPhone 17" gemesa.ios-client
+```
+
+#### Format Objective-C
+
+```
+$ find ios-client/ -name "*.m" -o -name "*.h" | xargs clang-format -i
+```
+
+#### Analyze Objective-C
+
+```
+$ xcodebuild analyze -scheme ios-client -destination 'platform=iOS Simulator,name=iPhone 17' -quiet GCC_TREAT_WARNINGS_AS_ERRORS=YES
+```
