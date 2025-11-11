@@ -1,0 +1,38 @@
+name: Server CI
+on: [push]
+jobs:
+  build:
+    runs-on: macos-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+      
+      - name: Cache Swift PM
+        uses: actions/cache@v4
+        with:
+          path: |
+            server/.build
+            ~/Library/Caches/org.swift.swiftpm
+          key: ${{ runner.os }}-spm-${{ hashFiles('server/Package.resolved') }}
+          restore-keys: |
+            ${{ runner.os }}-spm-
+      
+      - name: Build
+        run: |
+          cd server
+          swift build
+      
+      - name: Format Swift
+        run: |
+          brew install swift-format
+          swift-format lint --recursive --strict server/Sources/
+      
+      - name: Lint Swift
+        run: |
+          brew install swiftlint
+          swiftlint --strict server/Sources/
+      
+      - name: Codespell
+        run: |
+          brew install codespell
+          codespell server/
