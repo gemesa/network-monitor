@@ -14,6 +14,7 @@ Consider utilizing [SimplePing](https://developer.apple.com/library/archive/samp
 
 ## Requirements
 
+- iOS 26.0+
 - macOS 15.6+
 - Xcode 26.0.1+
 
@@ -48,6 +49,13 @@ $ websocat ws://127.0.0.1:8080/data
 {"type":"unsubscribe"}
 {"message":"unsubscribed","type":"ack"}
 ```
+
+## Preview
+
+<p align="center">
+  <img src="images/main-view-connect.png" width="400" />
+  <img src="images/main-view-disconnect.png" width="400" />
+</p>
 
 ## Command cheatsheet
 
