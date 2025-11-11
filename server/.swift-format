@@ -1,5 +1,8 @@
 {
   "indentation": {
     "spaces": 4
+  },
+  "rules": {
+    "NoBlockComments": false
   }
 }
