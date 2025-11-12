@@ -108,7 +108,44 @@
 }
 
 - (void)webSocketDidReceiveMessage:(NSString *)message {
-  self.contentTextView.text = message;
+  NSError *error = nil;
+  NSData *jsonData = [message dataUsingEncoding:NSUTF8StringEncoding];
+  NSDictionary *json = [NSJSONSerialization JSONObjectWithData:jsonData
+                                                       options:0
+                                                         error:&error];
+
+  if (error) {
+    self.contentTextView.text = [NSString
+        stringWithFormat:@"JSON parse error: %@", error.localizedDescription];
+    return;
+  }
+
+  NSString *type = json[@"type"];
+
+  if ([type isEqualToString:@"ack"]) {
+    self.contentTextView.text = json[@"message"];
+  } else if ([type isEqualToString:@"data"]) {
+    NSArray *devices = json[@"data"];
+    NSMutableString *formattedText = [[NSMutableString alloc] init];
+
+    [formattedText
+        appendFormat:@"Network devices (%lu found)\n", devices.count];
+    [formattedText appendString:@"====================\n\n"];
+
+    for (NSDictionary *device in devices) {
+      NSString *ip = device[@"ip"] ?: @"N/A";
+      NSString *mac = device[@"mac"] ?: @"N/A";
+      NSString *hostname = device[@"hostname"] ?: @"Unknown";
+
+      [formattedText appendFormat:@"- %@\n", hostname];
+      [formattedText appendFormat:@"  IP: %@\n", ip];
+      [formattedText appendFormat:@"  MAC: %@\n\n", mac];
+    }
+    self.contentTextView.text = formattedText;
+  } else {
+    self.contentTextView.text =
+        [NSString stringWithFormat:@"Received: %@", message];
+  }
 }
 
 @end
