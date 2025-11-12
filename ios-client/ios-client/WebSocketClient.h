@@ -5,6 +5,7 @@ NS_ASSUME_NONNULL_BEGIN
 @protocol WebSocketClientDelegate <NSObject>
 
 - (void)webSocketDidFailWithError:(NSError *)error;
+- (void)webSocketDidReceiveMessage:(NSString *)message;
 
 @end
 

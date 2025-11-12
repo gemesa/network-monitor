@@ -84,6 +84,11 @@ NS_ASSUME_NONNULL_BEGIN
         }
         NSLog(@"Received: %@", message.string);
 
+        if ([weakSelf.delegate
+                respondsToSelector:@selector(webSocketDidReceiveMessage:)]) {
+          [weakSelf.delegate webSocketDidReceiveMessage:message.string];
+        }
+
         // self is captured here.
         [weakSelf receiveMessage];
       }];
