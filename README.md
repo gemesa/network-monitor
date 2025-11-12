@@ -5,8 +5,8 @@ A network monitoring system that scans the specified subnet and streams device i
 ## Features
 
 - Server (macOS): scans the specified subnet using `nmap -sn` (ping scan) and broadcasts discovered devices to clients via WebSockets (Swift)
+- iOS client: displays the devices, see [Preview (iOS)](#preview-ios) (Objective-C, UIKit)
 - TODO: Android client
-- TODO: iOS client
 
 ## Requirements
 
