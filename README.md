@@ -18,7 +18,7 @@ A network monitoring system that scans the specified subnet and streams device i
 
 Server:
 
-Note: it is simpler to use environmental variables than command line arguments, see [this explanation](https://forums.swift.org/t/how-to-add-custom-arguments-to-vapors-serve-command/74406).
+> Note: it is simpler to use environmental variables than command line arguments, see [this explanation](https://forums.swift.org/t/how-to-add-custom-arguments-to-vapors-serve-command/74406).
 
 ```
 $ sudo SUBNET=192.168.2.0/24 ./build/arm64-apple-macosx/debug/server
