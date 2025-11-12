@@ -1,7 +1,7 @@
 #import "ViewController.h"
 #import "WebSocketClient.h"
 
-@interface ViewController ()
+@interface ViewController () <WebSocketClientDelegate>
 @property(nonatomic, strong) WebSocketClient *webSocketClient;
 @property(nonatomic, strong) UIButton *connectButton;
 @property(nonatomic, assign) BOOL isConnected;
@@ -14,6 +14,7 @@
   // Do any additional setup after loading the view.
   self.view.backgroundColor = [UIColor grayColor];
   self.webSocketClient = [[WebSocketClient alloc] init];
+  self.webSocketClient.delegate = self;
   self.isConnected = NO;
 
   self.connectButton = [UIButton buttonWithType:UIButtonTypeSystem];
@@ -42,19 +43,42 @@
 
 - (void)connectButtonTapped:(UIButton *)sender {
   if (self.isConnected) {
-    [self.webSocketClient sendMessage:@"{\"type\":\"unsubscribe\"}"];
-    [self.webSocketClient disconnect];
+    [self.webSocketClient sendMessage:@"{\"type\":\"unsubscribe\"}"
+                           completion:^(NSError *_Nullable error) {
+                             [self.webSocketClient disconnect];
+                           }];
     self.isConnected = NO;
     [self.connectButton setTitle:@"Connect" forState:UIControlStateNormal];
     self.connectButton.backgroundColor = [UIColor systemBlueColor];
   } else {
     NSString *wsURL = @"ws://127.0.0.1:8080/data";
     [self.webSocketClient connect:wsURL];
-    [self.webSocketClient sendMessage:@"{\"type\":\"subscribe\"}"];
+    [self.webSocketClient sendMessage:@"{\"type\":\"subscribe\"}"
+                           completion:nil];
     self.isConnected = YES;
     [self.connectButton setTitle:@"Disconnect" forState:UIControlStateNormal];
     self.connectButton.backgroundColor = [UIColor systemRedColor];
   }
+}
+
+- (void)webSocketDidFailWithError:(NSError *)error {
+  // Reset button state.
+  self.isConnected = NO;
+  [self.connectButton setTitle:@"Connect" forState:UIControlStateNormal];
+  self.connectButton.backgroundColor = [UIColor systemBlueColor];
+
+  UIAlertController *alert =
+      [UIAlertController alertControllerWithTitle:@"Connection error"
+                                          message:error.localizedDescription
+                                   preferredStyle:UIAlertControllerStyleAlert];
+
+  UIAlertAction *okAction =
+      [UIAlertAction actionWithTitle:@"OK"
+                               style:UIAlertActionStyleDefault
+                             handler:nil];
+
+  [alert addAction:okAction];
+  [self presentViewController:alert animated:YES completion:nil];
 }
 
 @end
