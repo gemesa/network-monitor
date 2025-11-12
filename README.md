@@ -10,7 +10,7 @@ A network monitoring system that scans the specified subnet and streams device i
 
 ## Future improvements
 
-Consider utilizing [SimplePing](https://developer.apple.com/library/archive/samplecode/SimplePing/Introduction/Intro.html), eliminating the need for root privileges.
+Consider utilizing [SimplePing](https://developer.apple.com/library/archive/samplecode/SimplePing/Introduction/Intro.html), eliminating the need for root privileges (required for ping scan).
 
 ## Requirements
 
