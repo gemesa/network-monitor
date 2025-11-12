@@ -26,6 +26,8 @@
   self.contentTextView.layer.borderWidth = 1.0;
   self.contentTextView.layer.borderColor = [UIColor lightGrayColor].CGColor;
   self.contentTextView.translatesAutoresizingMaskIntoConstraints = NO;
+  self.contentTextView.text =
+      @"Ready to connect.\n\nTap 'Connect' to view network devices.";
   [self.view addSubview:self.contentTextView];
 
   self.connectButton = [UIButton buttonWithType:UIButtonTypeSystem];
