@@ -41,6 +41,8 @@ sent: {"message":"unsubscribed","type":"ack"}
 
 Client:
 
+> Note: we use `websocat` here to test the server with a simple client. The "real" clients are the iOS and Android apps.
+
 ```
 $ websocat ws://127.0.0.1:8080/data                      
 {"type":"subscribe"}
@@ -50,7 +52,7 @@ $ websocat ws://127.0.0.1:8080/data
 {"message":"unsubscribed","type":"ack"}
 ```
 
-## Preview
+## Preview (iOS)
 
 <p align="center">
   <img src="images/main-view-connect.png" width="400" />
