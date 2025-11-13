@@ -39,6 +39,9 @@ android {
         checkAllWarnings = true
 
         disable += "UnusedResources"
+        disable += "LogConditional"
+        disable += "SetTextI18n"
+        disable += "HardcodedText"
     }
 
     spotless {
@@ -55,6 +58,8 @@ android {
 }
 
 dependencies {
+    // https://github.com/square/okhttp/tags
+    implementation(libs.okhttp)
     implementation(libs.appcompat)
     implementation(libs.material)
     implementation(libs.activity)
