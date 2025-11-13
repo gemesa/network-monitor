@@ -132,3 +132,38 @@ $ find ios-client/ -name "*.m" -o -name "*.h" | xargs clang-format -i
 ```
 $ xcodebuild analyze -scheme ios-client -destination 'platform=iOS Simulator,name=iPhone 17' -quiet GCC_TREAT_WARNINGS_AS_ERRORS=YES
 ```
+
+### Android client
+
+#### Build
+
+```
+$ ./gradlew assembleDebug
+```
+
+#### Run
+
+```
+$ emulator -list-avds
+$ emulator -avd Pixel_8 > /dev/null 2>&1 &
+$ adb install app/build/outputs/apk/debug/app-debug.apk
+$ adb shell am start -n com.example.android_client/.MainActivity
+```
+
+#### Terminate
+
+```
+$ adb shell am force-stop com.example.android_client
+```
+
+#### Format
+
+```
+$ ./gradlew spotlessApply
+```
+
+#### Lint
+
+```
+$ ./gradlew lint
+```
