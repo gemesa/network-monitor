@@ -1,5 +1,6 @@
 package com.example.android_client;
 
+import android.app.AlertDialog;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.Button;
@@ -81,7 +82,11 @@ public class MainActivity extends AppCompatActivity
 
     @Override
     public void onWebSocketError(@NonNull Exception error) {
-        // TODO
+        new AlertDialog.Builder(MainActivity.this)
+                .setTitle("Connection error")
+                .setMessage(error.getMessage())
+                .setPositiveButton("OK", null)
+                .show();
     }
 
     @Override

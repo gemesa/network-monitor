@@ -114,7 +114,13 @@ public class WebSocketClient {
 
                                 Log.e(TAG, "Connection error: " + t.getMessage());
                                 if (listener != null) {
-                                    listener.onWebSocketError(new Exception(t));
+                                    mainHandler.post(
+                                            new Runnable() {
+                                                @Override
+                                                public void run() {
+                                                    listener.onWebSocketError(new Exception(t));
+                                                }
+                                            });
                                 }
                             }
                         });
