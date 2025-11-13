@@ -11,8 +11,9 @@ jobs:
         uses: actions/setup-java@v4
         with:
           distribution: 'temurin'
+          # google-java-format 1.32.0 requires Java 21
           # spotless 8.0.0 requires Java 17
-          java-version: '17'
+          java-version: '21'
 
       - name: Build
         run: |
