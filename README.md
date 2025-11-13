@@ -6,13 +6,21 @@ A network monitoring system that scans the specified subnet and streams device i
 
 - Server (macOS): scans the specified subnet using `nmap -sn` (ping scan) and broadcasts discovered devices to clients via WebSockets (Swift)
 - iOS client: displays the devices, see [Preview (iOS)](#preview-ios) (Objective-C, UIKit)
-- TODO: Android client
+- Android client: displays the devices, see [Preview (Android)](#preview-android) (Java, View system)
 
 ## Requirements
+
+### iOS
 
 - iOS 26.0+
 - macOS 15.6+
 - Xcode 26.0.1+
+
+### Android
+
+- Android 7.0+ (API 24)
+- JDK 11+ (JDK 21 for CI/CD)
+- Android Studio Otter | 2025.2.1+
 
 ## Usage
 
