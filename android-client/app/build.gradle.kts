@@ -1,5 +1,6 @@
 plugins {
     alias(libs.plugins.android.application)
+    id("com.diffplug.spotless") version "8.0.0"
 }
 
 android {
@@ -38,6 +39,18 @@ android {
         checkAllWarnings = true
 
         disable += "UnusedResources"
+    }
+
+    spotless {
+        java {
+            target("src/**/*.java")
+            // Check available versions here:
+            // https://github.com/google/google-java-format
+            googleJavaFormat("1.32.0").aosp()
+            removeUnusedImports()
+            trimTrailingWhitespace()
+            endWithNewline()
+        }
     }
 }
 
