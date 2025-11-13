@@ -15,6 +15,16 @@ jobs:
           # spotless 8.0.0 requires Java 17
           java-version: '21'
 
+      - name: Cache Gradle packages
+        uses: actions/cache@v4
+        with:
+          path: |
+            ~/.gradle/caches
+            ~/.gradle/wrapper
+          key: ${{ runner.os }}-gradle-${{ hashFiles('android-client/**/*.gradle.kts', 'android-client/**/gradle-wrapper.properties') }}
+          restore-keys: |
+            ${{ runner.os }}-gradle-
+
       - name: Build
         run: |
           cd android-client
