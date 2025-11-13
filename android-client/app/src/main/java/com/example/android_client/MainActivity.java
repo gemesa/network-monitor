@@ -10,11 +10,14 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.content.res.ResourcesCompat;
+import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
 
 public class MainActivity extends AppCompatActivity
         implements WebSocketClient.WebSocketClientListener {
 
-    private TextView contentTextView;
+    TextView contentTextView;
     private Button connectButton;
     WebSocketClient webSocketClient;
     boolean isConnected = false;
@@ -90,7 +93,48 @@ public class MainActivity extends AppCompatActivity
     }
 
     @Override
-    public void onWebSocketMessage(@NonNull String message) {
-        // TODO
+    public void onWebSocketMessage(final @NonNull String message) {
+        runOnUiThread(
+                new Runnable() {
+                    @Override
+                    public void run() {
+                        try {
+                            JSONObject json = new JSONObject(message);
+                            String type = json.optString("type");
+
+                            if ("ack".equals(type)) {
+                                contentTextView.setText(json.optString("message"));
+                            } else if ("data".equals(type)) {
+                                JSONArray devices = json.optJSONArray("data");
+                                StringBuilder formattedText = new StringBuilder();
+
+                                if (devices != null) {
+                                    formattedText
+                                            .append("Network devices (")
+                                            .append(devices.length())
+                                            .append(" found)\n");
+                                    formattedText.append("====================\n\n");
+
+                                    for (int i = 0; i < devices.length(); i++) {
+                                        JSONObject device = devices.getJSONObject(i);
+                                        String ip = device.optString("ip", "N/A");
+                                        String mac = device.optString("mac", "N/A");
+                                        String hostname = device.optString("hostname", "Unknown");
+
+                                        formattedText.append("- ").append(hostname).append("\n");
+                                        formattedText.append("  IP: ").append(ip).append("\n");
+                                        formattedText.append("  MAC: ").append(mac).append("\n\n");
+                                    }
+                                }
+
+                                contentTextView.setText(formattedText.toString());
+                            } else {
+                                contentTextView.setText("Received: " + message);
+                            }
+                        } catch (JSONException e) {
+                            contentTextView.setText("JSON parse error: " + e.getMessage());
+                        }
+                    }
+                });
     }
 }
