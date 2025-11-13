@@ -59,7 +59,7 @@ $ websocat ws://127.0.0.1:8080/data
 ## Preview (Android)
 
 <p align="center">
-  <img src="images/android-main-view-connect.png" width="400" />
+  <img src="images/android-main-view-connect-empty.png" width="400" />
   <img src="images/android-main-view-connection-error.png" width="400" />
   <img src="images/android-main-view-connect-devices.png" width="400" />
 </p>
